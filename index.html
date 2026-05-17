@@ -606,6 +606,95 @@
     #lock-icon {
       font-size: 14px;
     }
+
+    /* ──────────────────────────────────────────── */
+    /*  MOBILE — only viewing, no editing           */
+    /* ──────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+        height: auto;
+        min-height: 100vh;
+        overflow: visible;
+      }
+
+      #sidebar {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        order: 2;
+        border-right: none;
+        border-top: 1px solid var(--gold-light);
+        height: auto;
+        overflow: visible;
+      }
+
+      #canvas {
+        order: 1;
+        width: 100%;
+        height: auto;
+        overflow-x: auto;
+        overflow-y: visible;
+        padding: 12px 8px;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      #hall {
+        margin: 0;
+        box-shadow: none;
+      }
+
+      /* Force-hide all editing affordances */
+      .drag-handle {
+        display: none !important;
+      }
+
+      #btn-save {
+        display: none !important;
+      }
+
+      #lock-banner {
+        pointer-events: none;
+        cursor: default;
+      }
+
+      .seat-item input {
+        pointer-events: none;
+        background: transparent;
+        font-size: 14px;
+        color: var(--text);
+      }
+
+      .seat-item {
+        padding: 12px 14px;
+        cursor: default;
+      }
+
+      #seats-list {
+        flex: none;
+        max-height: none;
+        overflow: visible;
+        padding: 10px 14px 24px;
+      }
+
+      #sidebar-header h1 {
+        font-size: 19px;
+      }
+
+      #sidebar-header p {
+        font-size: 11px;
+      }
+
+      /* Hide legend - takes up space, info is in chair colors anyway */
+      #legend {
+        display: none;
+      }
+
+      /* Footer simpler on mobile */
+      #sidebar-footer {
+        padding: 10px 14px 16px;
+      }
+    }
   </style>
 </head>
 
@@ -688,6 +777,10 @@
     } catch (e) { }
 
     function toggleLock() {
+      if (isMobileView()) {
+        showToast('🔒 Editarea e disponibilă doar pe desktop');
+        return;
+      }
       if (isLocked) {
         const pw = prompt('🔒 Introdu parola pentru a edita planul:');
         if (pw === null) return;
@@ -708,13 +801,40 @@
     }
 
     function applyLockState() {
-      document.body.classList.toggle('locked', isLocked);
-      document.getElementById('lock-icon').textContent = isLocked ? '🔒' : '🔓';
-      document.getElementById('lock-text').textContent = isLocked
-        ? 'Doar vizualizare · Apasă pentru editare'
-        : 'Editare activă · Apasă pentru blocare';
+      const mobile = isMobileView();
+      // On mobile, always behave as locked regardless of stored unlock state
+      document.body.classList.toggle('locked', isLocked || mobile);
+
+      const iconEl = document.getElementById('lock-icon');
+      const textEl = document.getElementById('lock-text');
+
+      if (mobile) {
+        iconEl.textContent = '🔒';
+        textEl.textContent = 'Doar vizualizare · Editare disponibilă pe desktop';
+      } else {
+        iconEl.textContent = isLocked ? '🔒' : '🔓';
+        textEl.textContent = isLocked
+          ? 'Doar vizualizare · Apasă pentru editare'
+          : 'Editare activă · Apasă pentru blocare';
+      }
+
+      renderAll();
       if (currentTable) selectTable(currentTable);
     }
+
+    // Re-apply on resize/orientation change so labels switch between names ↔ index
+    let _resizeTimer;
+    let _wasMobile = isMobileView();
+    window.addEventListener('resize', () => {
+      clearTimeout(_resizeTimer);
+      _resizeTimer = setTimeout(() => {
+        const nowMobile = isMobileView();
+        if (nowMobile !== _wasMobile) {
+          _wasMobile = nowMobile;
+          applyLockState();
+        }
+      }, 200);
+    });
 
     // ────────────────────────────────────────────────
     // DATA
@@ -773,12 +893,18 @@
       return saved[id] ? [...saved[id]] : null;
     }
 
-    function getChairLabel(name) {
+    function isMobileView() {
+      return window.innerWidth <= 768;
+    }
+
+    function getChairLabel(name, idx) {
+      // On mobile: show index number (1, 2, 3…) instead of name
+      if (isMobileView()) {
+        return String((idx ?? 0) + 1);
+      }
       if (!name || !name.trim()) return '';
       const parts = name.trim().split(/\s+/);
-      // Romanian convention: "LastName FirstName" → display as "FirstName L."
       if (parts.length === 1) return parts[0];
-      // First part = last name, second part = first name → swap and abbreviate last
       const lastName = parts[0];
       const firstName = parts.slice(1).join(' ');
       return `${firstName} ${lastName[0]}.`;
@@ -880,7 +1006,7 @@
         head.style.cssText = `left:${headX}px; top:${TABLE_H / 2 - 15}px;`;
         const headIdx = mesa.seats - 1;
         if (guests[headIdx] && guests[headIdx].trim()) head.classList.add('filled');
-        head.textContent = getChairLabel(guests[headIdx] || '');
+        head.textContent = getChairLabel(guests[headIdx] || '', headIdx);
         wrap.appendChild(head);
       }
 
@@ -899,7 +1025,7 @@
         const gy = row === 0 ? -CHAIR_H - 4 : TABLE_H + 4;
         chair.style.cssText = `left:${gx}px; top:${gy}px;`;
         if (guests[i] && guests[i].trim()) chair.classList.add('filled');
-        chair.textContent = getChairLabel(guests[i] || '');
+        chair.textContent = getChairLabel(guests[i] || '', i);
         wrap.appendChild(chair);
       }
 
@@ -922,7 +1048,7 @@
         const gx = startX + i * (CHAIR_W + CHAIR_GAP);
         chair.style.cssText = `position:absolute; left:${gx}px; top:-28px;`;
         if (guests[i] && guests[i].trim()) chair.classList.add('filled');
-        chair.textContent = getChairLabel(guests[i] || '');
+        chair.textContent = getChairLabel(guests[i] || '', i);
         prezEl.appendChild(chair);
       }
     }
@@ -962,7 +1088,7 @@
         const item = document.createElement('div');
         item.className = 'seat-item' + (isHead ? ' head-seat' : '');
         item.dataset.idx = i;
-        item.draggable = !isLocked;
+        item.draggable = !(isLocked || isMobileView());
 
         const handle = document.createElement('span');
         handle.className = 'drag-handle';
@@ -978,7 +1104,7 @@
         inp.placeholder = isHead ? 'Capăt masă…' : `Loc ${i + 1}…`;
         inp.value = guests[i] || '';
         inp.dataset.idx = i;
-        inp.readOnly = isLocked;
+        inp.readOnly = isLocked || isMobileView();
         inp.addEventListener('input', onSeatInput);
         // Prevent drag from starting when interacting with the input
         inp.addEventListener('mousedown', (e) => e.stopPropagation());
