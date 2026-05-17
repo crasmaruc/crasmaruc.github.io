@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="ro">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plan Sală Nuntă - 24 Mai 2026</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --gold: #c9a84c;
+      --gold-light: #e8d49a;
+      --gold-dark: #8a6a1f;
+      --cream: #faf6ef;
+      --cream-dark: #f0e8d8;
+      --brown: #5c3d1e;
+      --brown-light: #8b6340;
+      --text: #2d1f0e;
+      --muted: #9a7d5a;
+      --white: #fff;
+      --chair-empty: #e8d49a;
+      --chair-filled: #c9a84c;
+      --chair-border: #8a6a1f;
+      --sidebar-w: 360px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Jost', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ── SIDEBAR ── */
+    #sidebar {
+      width: var(--sidebar-w);
+      min-width: var(--sidebar-w);
+      background: var(--white);
+      border-right: 1px solid var(--gold-light);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    #sidebar-header {
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid var(--cream-dark);
+      background: var(--cream);
+    }
+
+    #sidebar-header h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--brown);
+      letter-spacing: 0.04em;
+    }
+
+    #sidebar-header p {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    #table-info {
+      padding: 16px 24px 12px;
+      border-bottom: 1px solid var(--cream-dark);
+    }
+
+    #table-info h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--gold-dark);
+      margin-bottom: 4px;
+    }
+
+    #table-info p {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    #seats-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px 16px;
+    }
+
+    #seats-list::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    #seats-list::-webkit-scrollbar-thumb {
+      background: var(--gold-light);
+      border-radius: 2px;
+    }
+
+    .seat-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      margin-bottom: 6px;
+      background: var(--cream);
+      border: 1px solid var(--cream-dark);
+      transition: border-color .2s, opacity .2s, transform .15s;
+      position: relative;
+    }
+
+    .seat-item:has(input:focus) {
+      border-color: var(--gold);
+    }
+
+    .seat-item.head-seat {
+      background: #fff9ee;
+      border-color: var(--gold-light);
+    }
+
+    .seat-item.dragging {
+      opacity: 0.4;
+      transform: scale(0.98);
+    }
+
+    .seat-item.drop-above::before,
+    .seat-item.drop-below::after {
+      content: '';
+      position: absolute;
+      left: 6px;
+      right: 6px;
+      height: 3px;
+      background: var(--gold-dark);
+      border-radius: 2px;
+      pointer-events: none;
+    }
+
+    .seat-item.drop-above::before {
+      top: -2px;
+    }
+
+    .seat-item.drop-below::after {
+      bottom: -2px;
+    }
+
+    .drag-handle {
+      cursor: grab;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1;
+      padding: 0 2px;
+      user-select: none;
+      flex-shrink: 0;
+      letter-spacing: -2px;
+      transition: color .15s;
+    }
+
+    .drag-handle:hover {
+      color: var(--gold-dark);
+    }
+
+    .drag-handle:active {
+      cursor: grabbing;
+    }
+
+    .seat-num {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--gold);
+      color: var(--white);
+      font-size: 11px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .seat-num.head {
+      background: var(--brown);
+    }
+
+    .seat-item input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      font-family: 'Jost', sans-serif;
+      font-size: 13px;
+      color: var(--text);
+      outline: none;
+      padding: 2px 0;
+    }
+
+    .seat-item input::placeholder {
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    .seat-label {
+      font-size: 10px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+
+    #sidebar-footer {
+      padding: 12px 16px;
+      border-top: 1px solid var(--cream-dark);
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 9px 0;
+      border-radius: 8px;
+      border: 1px solid var(--gold);
+      font-family: 'Jost', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all .2s;
+    }
+
+    .btn-primary {
+      background: var(--gold);
+      color: var(--white);
+    }
+
+    .btn-primary:hover {
+      background: var(--gold-dark);
+      border-color: var(--gold-dark);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--gold-dark);
+    }
+
+    .btn-secondary:hover {
+      background: var(--cream);
+    }
+
+    /* ── CANVAS ── */
+    #canvas {
+      flex: 1;
+      overflow: auto;
+      position: relative;
+      padding: 20px;
+    }
+
+    #hall {
+      position: relative;
+      width: 1000px;
+      margin: 0 auto;
+      background: var(--white);
+      border: 2px solid var(--gold-light);
+      border-radius: 12px;
+      box-shadow: 0 4px 40px rgba(140, 100, 40, .08);
+    }
+
+    /* ── ZONES: DJ, PHOTO, CANDY ── */
+    .zone {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      font-size: 11px;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      font-weight: 500;
+      gap: 4px;
+    }
+
+    .zone-icon {
+      font-size: 22px;
+    }
+
+    #zone-dj {
+      top: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 320px;
+      height: 80px;
+      background: var(--brown);
+      color: #e8d49a;
+      border: 1.5px solid var(--gold-dark);
+      font-size: 13px;
+    }
+
+    #zone-photo {
+      top: 24px;
+      left: 24px;
+      width: 170px;
+      height: 80px;
+      background: var(--cream-dark);
+      color: var(--brown);
+      border: 1px dashed var(--gold);
+    }
+
+    #zone-candy {
+      top: 24px;
+      right: 24px;
+      width: 170px;
+      height: 80px;
+      background: var(--cream-dark);
+      color: var(--brown);
+      border: 1px dashed var(--gold);
+    }
+
+    /* ── PREZIDIU (Masa Mirilor) ── */
+    #prezidiu {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 620px;
+      cursor: pointer;
+    }
+
+    .prezidiu-label {
+      text-align: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 15px;
+      font-style: italic;
+      color: var(--gold-dark);
+      margin-bottom: 36px;
+      letter-spacing: .08em;
+    }
+
+    .prezidiu-label::before,
+    .prezidiu-label::after {
+      content: '✦';
+      color: var(--gold);
+      margin: 0 10px;
+      font-size: 12px;
+    }
+
+    .prezidiu-table {
+      background: linear-gradient(180deg, #fff9ee 0%, var(--cream) 100%);
+      border: 2px solid var(--gold);
+      border-radius: 12px;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transition: border-color .2s;
+    }
+
+    .prezidiu-table:hover,
+    .prezidiu-table.selected {
+      border-color: var(--gold-dark);
+      box-shadow: 0 0 0 3px var(--gold-light);
+    }
+
+    .prezidiu-table .mesa-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--brown);
+      letter-spacing: .04em;
+      text-align: center;
+    }
+
+    .prezidiu-table .mesa-sub {
+      font-family: 'Jost', sans-serif;
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 300;
+      letter-spacing: .05em;
+      margin-top: 2px;
+    }
+
+    /* ── TABLES ── */
+    .masa-wrap {
+      position: absolute;
+      cursor: pointer;
+    }
+
+    .masa-rect {
+      background: var(--cream);
+      border: 1.5px solid var(--gold);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color .2s, background .2s;
+      position: relative;
+      z-index: 2;
+    }
+
+    .masa-rect:hover,
+    .masa-wrap.selected .masa-rect {
+      background: #fff9ee;
+      border-color: var(--gold-dark);
+    }
+
+    .masa-wrap.selected .masa-rect {
+      box-shadow: 0 0 0 3px var(--gold-light);
+    }
+
+    .masa-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--brown);
+      text-align: center;
+      line-height: 1.3;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .masa-count {
+      font-size: 10px;
+      color: var(--muted);
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      display: block;
+    }
+
+    /* Chairs with initials */
+    .chair {
+      position: absolute;
+      width: 44px;
+      height: 22px;
+      border-radius: 4px;
+      background: var(--chair-empty);
+      border: 1px solid var(--chair-border);
+      transition: background .2s;
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Jost', sans-serif;
+      font-size: 8px;
+      font-weight: 500;
+      color: var(--brown);
+      letter-spacing: -.02em;
+      overflow: hidden;
+      pointer-events: none;
+      user-select: none;
+      padding: 0 2px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .chair.filled {
+      background: var(--chair-filled);
+      color: var(--white);
+    }
+
+    .chair.head-chair {
+      width: 40px;
+      height: 30px;
+      background: var(--brown);
+      border-color: var(--brown);
+      color: var(--gold-light);
+      font-size: 8px;
+    }
+
+    .chair.head-chair.filled {
+      background: var(--gold-dark);
+      color: var(--white);
+    }
+
+    /* Wheat stem */
+    .stem {
+      position: absolute;
+      background: var(--gold-light);
+      z-index: 0;
+    }
+
+    /* Legend */
+    #legend {
+      position: absolute;
+      top: 130px;
+      right: 24px;
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      background: rgba(255, 255, 255, .9);
+      border: 1px solid var(--cream-dark);
+      border-radius: 8px;
+      padding: 10px 12px;
+      z-index: 5;
+    }
+
+    .leg-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .leg-box {
+      width: 16px;
+      height: 12px;
+      border-radius: 2px;
+      border: 1px solid var(--chair-border);
+    }
+
+    #progress-bar {
+      height: 3px;
+      background: var(--gold-light);
+      border-radius: 2px;
+      margin: 8px 0 0;
+      overflow: hidden;
+    }
+
+    #progress-fill {
+      height: 100%;
+      background: var(--gold);
+      border-radius: 2px;
+      transition: width .3s;
+    }
+
+    #progress-text {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--brown);
+      color: var(--gold-light);
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 13px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .3s;
+      z-index: 999;
+    }
+
+    #toast.show {
+      opacity: 1;
+    }
+
+    /* ── LOCK MODE ── */
+    body.locked .drag-handle {
+      display: none;
+    }
+
+    body.locked .seat-item {
+      cursor: default;
+    }
+
+    body.locked .seat-item input {
+      cursor: default;
+      background: transparent;
+    }
+
+    body.locked #btn-save {
+      display: none;
+    }
+
+    body.locked .seat-num {
+      background: var(--muted);
+    }
+
+    body.locked .seat-num.head {
+      background: var(--brown-light);
+    }
+
+    #lock-banner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: var(--cream-dark);
+      color: var(--brown);
+      font-size: 11px;
+      letter-spacing: .04em;
+      border-bottom: 1px solid var(--gold-light);
+    }
+
+    body:not(.locked) #lock-banner {
+      background: #e8f5e0;
+      color: #3b6d11;
+      border-bottom-color: #97c459;
+    }
+
+    #lock-icon {
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- SIDEBAR -->
+  <div id="sidebar">
+    <div id="lock-banner" onclick="toggleLock()">
+      <span id="lock-icon">🔒</span>
+      <span id="lock-text">Doar vizualizare &nbsp;·&nbsp; Apasă pentru editare</span>
+    </div>
+    <div id="sidebar-header">
+      <h1>Plan Sală Nuntă</h1>
+      <p>24 Mai 2026 &nbsp;·&nbsp; 86 invitați</p>
+      <div id="progress-bar">
+        <div id="progress-fill" style="width:0%"></div>
+      </div>
+      <div id="progress-text">0 / 86 locuri completate</div>
+    </div>
+    <div id="table-info">
+      <h2 id="info-title">Selectează o masă</h2>
+      <p id="info-sub">Apasă pe oricare masă din sală pentru a edita locurile</p>
+    </div>
+    <div id="seats-list"></div>
+    <div id="sidebar-footer">
+      <button id="btn-save" class="btn btn-primary" onclick="saveAll()">💾 Salvează</button>
+      <button class="btn btn-secondary" onclick="exportData()">📋 Export</button>
+    </div>
+  </div>
+
+  <!-- HALL CANVAS -->
+  <div id="canvas">
+    <div id="hall">
+      <div class="zone" id="zone-photo">
+        <span class="zone-icon">📷</span>Photo Corner
+      </div>
+      <div class="zone" id="zone-dj">
+        <span class="zone-icon">🎵</span>DJ
+      </div>
+      <div class="zone" id="zone-candy">
+        <span class="zone-icon">🍬</span>Candy Bar
+      </div>
+
+      <div id="legend">
+        <div class="leg-row">
+          <div class="leg-box" style="background:var(--chair-empty)"></div> Loc liber
+        </div>
+        <div class="leg-row">
+          <div class="leg-box" style="background:var(--chair-filled)"></div> Loc ocupat
+        </div>
+        <div class="leg-row">
+          <div class="leg-box" style="background:var(--brown)"></div> Capăt masă
+        </div>
+      </div>
+
+      <div id="tables-container"></div>
+
+      <div id="prezidiu" onclick="selectTable('prez')">
+        <div class="prezidiu-label">Masa de Prezidiu</div>
+        <div class="prezidiu-table" id="mesa-prez">
+          <div style="text-align:center;">
+            <div class="mesa-name">Masa 11 &nbsp;·&nbsp; Miri &amp; Nași</div>
+            <div class="mesa-sub">5 locuri</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <script>
+    // ────────────────────────────────────────────────
+    // LOCK / PASSWORD PROTECTION
+    // ────────────────────────────────────────────────
+    let isLocked = true;
+    // Restore unlock state for this owner (per-browser)
+    try {
+      if (localStorage.getItem('nunta_unlocked') === 'true') isLocked = false;
+    } catch (e) { }
+
+    function toggleLock() {
+      if (isLocked) {
+        const pw = prompt('🔒 Introdu parola pentru a edita planul:');
+        if (pw === null) return;
+        if (pw === 'nunta2026') {
+          isLocked = false;
+          try { localStorage.setItem('nunta_unlocked', 'true'); } catch (e) { }
+          applyLockState();
+          showToast('🔓 Editare activată');
+        } else {
+          showToast('❌ Parolă greșită!');
+        }
+      } else {
+        isLocked = true;
+        try { localStorage.removeItem('nunta_unlocked'); } catch (e) { }
+        applyLockState();
+        showToast('🔒 Mod doar-vizualizare');
+      }
+    }
+
+    function applyLockState() {
+      document.body.classList.toggle('locked', isLocked);
+      document.getElementById('lock-icon').textContent = isLocked ? '🔒' : '🔓';
+      document.getElementById('lock-text').textContent = isLocked
+        ? 'Doar vizualizare · Apasă pentru editare'
+        : 'Editare activă · Apasă pentru blocare';
+      if (currentTable) selectTable(currentTable);
+    }
+
+    // ────────────────────────────────────────────────
+    // DATA
+    // ────────────────────────────────────────────────
+    const MESE = [
+      {
+        id: 1, name: 'Masa 1', seats: 8, headSeat: false,
+        guests: ['Moldovanu Ionuț', 'Acasandrei Iuliana', 'Griggs Rose', 'Williams Aimee', 'Pleșcan Alberto', 'Pleșcan Maria', 'Sara', 'Avarvarei Ina']
+      },
+      {
+        id: 2, name: 'Masa 2', seats: 8, headSeat: false,
+        guests: ['Luchian Ion', 'Luchian Lili', 'Romaniuc Larisa', 'Romaniuc Ovidiu', 'Sandu Aurel', 'Sandu Elena', 'Iacob Anca', 'Iacob Dumitru']
+      },
+      {
+        id: 3, name: 'Masa 3', seats: 8, headSeat: false,
+        guests: ['Burcă Bogdan', 'Grecu Marina', 'Antaluca-Grecu Gabriel', 'Antaluca-Grecu Nina', 'Grecu Ticu', 'Grecu Maria', 'Grecu Grigore', 'Grecu Dana']
+      },
+      {
+        id: 4, name: 'Masa 4', seats: 9, headSeat: true,
+        guests: ['Wegener Tatiana', 'Fiedler Mihaela', 'Toanchină Ioana', 'Grecu Nadia', 'Wegener Irina', 'Kurth Tobias', 'Grecu Adrian', 'Petraș Mădălina', 'Grecu Ilie']
+      },
+      {
+        id: 5, name: 'Masa 5', seats: 8, headSeat: false,
+        guests: ['Timofte Valentin', 'Timofte Daria', 'Varvarici Claudia', 'Varvarici Cristi', 'Ivanov Petru', 'Ivanov Ana', 'Alexa Domnica', 'Alexa Ioachim']
+      },
+      {
+        id: 6, name: 'Masa 6', seats: 8, headSeat: false,
+        guests: ['Iordache Mircea', 'Iordache Georgiana', 'Chirițoiu Bianca', 'Chirițoiu Nelu', 'Ivanov Vlad', 'Ivanov Laura', 'Ene Andreea', 'Ene Adi']
+      },
+      {
+        id: 7, name: 'Masa 7', seats: 8, headSeat: false,
+        guests: ['Crâșmăruc Ionuț', 'Crâșmăruc Roxana', 'Anastasia', 'Crâșmăruc Elena', 'Rotaru Matei', 'Rotaru Tatiana', 'Petcu Bianca', 'Chelaru Maria']
+      },
+      {
+        id: 8, name: 'Masa 8', seats: 8, headSeat: false,
+        guests: ['Cotia Anca', 'Antonia', 'Hurjui Andreea', 'Hurjui Ionuț', 'Unguru Roxana', 'Mathias', 'Cotia Andreea', 'Cotia Claudiu']
+      },
+      {
+        id: 9, name: 'Masa 9', seats: 8, headSeat: false,
+        guests: ['Rotaru Mihai', 'Rotaru Angela', 'Bălan Ana', 'Hurjui Maricica', 'Cotia Petru', 'Cotia Gabriela', 'Vasile Monica', 'Vasile David']
+      },
+      {
+        id: 10, name: 'Masa 10', seats: 8, headSeat: false,
+        guests: ['Negoiță Walter', 'Negoiță Cristina', 'Negoiță Jana', 'Negoiță Truță', 'Negoiță Alex', 'Negoiță Denisa', 'Stanciu Mariana', 'Stanciu Sorin']
+      },
+    ];
+    const PREZ = {
+      id: 'prez', name: 'Masa 11 · Miri & Nași', seats: 5, headSeat: false,
+      guests: ['Negoiță Irinel', 'Crâșmăruc Gabriel', 'Chloe', 'Crâșmăruc Andreea', 'Negoiță Alina']
+    };
+
+    let saved = {};
+    try { saved = JSON.parse(localStorage.getItem('nunta_plan_v2') || '{}'); } catch (e) { }
+
+    function getGuests(id) {
+      return saved[id] ? [...saved[id]] : null;
+    }
+
+    function getChairLabel(name) {
+      if (!name || !name.trim()) return '';
+      const parts = name.trim().split(/\s+/);
+      // Romanian convention: "LastName FirstName" → display as "FirstName L."
+      if (parts.length === 1) return parts[0];
+      // First part = last name, second part = first name → swap and abbreviate last
+      const lastName = parts[0];
+      const firstName = parts.slice(1).join(' ');
+      return `${firstName} ${lastName[0]}.`;
+    }
+
+    // ────────────────────────────────────────────────
+    // WHEAT SPIKE LAYOUT
+    // Pairs side-by-side: (1,6) (2,7) (3,8) (4,9) (5,10)
+    // ────────────────────────────────────────────────
+    const HALL_W = 1000;
+    const TABLE_W = 200;
+    const TABLE_H = 64;
+    const CHAIR_W = 44;
+    const CHAIR_H = 22;
+    const CHAIR_GAP = 4;
+
+    const CX = HALL_W / 2;
+    const Y_START = 200;
+    const ROW_STEP = 240;
+    const ANGLE_DEG = -28;
+    const SPINE_OFFSET = 120;
+
+    const tableRows = [
+      { left: 0, right: 5 },   // M1, M6
+      { left: 1, right: 6 },   // M2, M7
+      { left: 2, right: 7 },   // M3, M8
+      { left: 3, right: 8 },   // M4, M9
+      { left: 4, right: 9 },   // M5, M10
+    ];
+
+    function getTablePos(side, rowIdx) {
+      const y = Y_START + rowIdx * ROW_STEP;
+      const angle = side === 'left' ? -ANGLE_DEG : ANGLE_DEG;
+      const cx = side === 'left'
+        ? CX - SPINE_OFFSET - TABLE_W / 2 + 10
+        : CX + SPINE_OFFSET + TABLE_W / 2 - 10;
+      return { cx, cy: y, angle };
+    }
+
+    // ────────────────────────────────────────────────
+    // RENDER
+    // ────────────────────────────────────────────────
+    const container = document.getElementById('tables-container');
+
+    function renderAll() {
+      container.innerHTML = '';
+
+      const totalHeight = Y_START + (tableRows.length - 1) * ROW_STEP + 100;
+
+      // Decorative wheat stem
+      const spine = document.createElement('div');
+      spine.className = 'stem';
+      spine.style.cssText = `left:${CX - 1}px; top:${Y_START - 80}px; width:2px; height:${totalHeight - Y_START + 130}px;`;
+      container.appendChild(spine);
+
+      tableRows.forEach((row, rowIdx) => {
+        ['left', 'right'].forEach(side => {
+          const mesa = MESE[row[side]];
+          renderTable(mesa, side, rowIdx);
+        });
+      });
+
+      renderPrezidiuChairs();
+      updateProgress();
+
+      const hall = document.getElementById('hall');
+      hall.style.minHeight = (totalHeight + 220) + 'px';
+    }
+
+    function renderTable(mesa, side, rowIdx) {
+      const { cx, cy, angle } = getTablePos(side, rowIdx);
+      const guests = getGuests(mesa.id) || [...mesa.guests];
+
+      const wrap = document.createElement('div');
+      wrap.className = 'masa-wrap';
+      wrap.id = `mesa-${mesa.id}`;
+      wrap.style.cssText = `
+    width:${TABLE_W}px; height:${TABLE_H}px;
+    left:${cx - TABLE_W / 2}px;
+    top:${cy - TABLE_H / 2}px;
+    transform-origin: center center;
+    transform: rotate(${angle}deg);
+  `;
+      wrap.onclick = (e) => { e.stopPropagation(); selectTable(mesa.id); };
+
+      const rect = document.createElement('div');
+      rect.className = 'masa-rect';
+      rect.style.cssText = `width:100%;height:100%;`;
+      rect.innerHTML = `<div class="masa-name">${mesa.name}<span class="masa-count">${mesa.seats} pers.</span></div>`;
+      wrap.appendChild(rect);
+
+      // Head chair (Masa 4) at INTERIOR end of table (toward spine)
+      if (mesa.headSeat) {
+        const head = document.createElement('div');
+        head.className = 'chair head-chair';
+        // For left tables: interior = right edge (closer to spine)
+        // For right tables: interior = left edge (closer to spine)
+        const headX = side === 'left' ? TABLE_W - 6 : -34;
+        head.style.cssText = `left:${headX}px; top:${TABLE_H / 2 - 15}px;`;
+        const headIdx = mesa.seats - 1;
+        if (guests[headIdx] && guests[headIdx].trim()) head.classList.add('filled');
+        head.textContent = getChairLabel(guests[headIdx] || '');
+        wrap.appendChild(head);
+      }
+
+      // Regular chairs along long edges
+      const regularSeats = mesa.headSeat ? mesa.seats - 1 : mesa.seats;
+      const perSide = Math.ceil(regularSeats / 2);
+      const totalW = perSide * (CHAIR_W + CHAIR_GAP) - CHAIR_GAP;
+      const startX = (TABLE_W - totalW) / 2;
+
+      for (let i = 0; i < regularSeats; i++) {
+        const chair = document.createElement('div');
+        chair.className = 'chair';
+        const col = i % perSide;
+        const row = Math.floor(i / perSide);
+        const gx = startX + col * (CHAIR_W + CHAIR_GAP);
+        const gy = row === 0 ? -CHAIR_H - 4 : TABLE_H + 4;
+        chair.style.cssText = `left:${gx}px; top:${gy}px;`;
+        if (guests[i] && guests[i].trim()) chair.classList.add('filled');
+        chair.textContent = getChairLabel(guests[i] || '');
+        wrap.appendChild(chair);
+      }
+
+      container.appendChild(wrap);
+    }
+
+    function renderPrezidiuChairs() {
+      const prezEl = document.getElementById('mesa-prez');
+      if (!prezEl) return;
+      prezEl.querySelectorAll('.chair').forEach(c => c.remove());
+
+      const guests = getGuests('prez') || [...PREZ.guests];
+      const pW = 620;
+      const totalW = PREZ.seats * (CHAIR_W + CHAIR_GAP) - CHAIR_GAP;
+      const startX = (pW - totalW) / 2;
+
+      for (let i = 0; i < PREZ.seats; i++) {
+        const chair = document.createElement('div');
+        chair.className = 'chair';
+        const gx = startX + i * (CHAIR_W + CHAIR_GAP);
+        chair.style.cssText = `position:absolute; left:${gx}px; top:-28px;`;
+        if (guests[i] && guests[i].trim()) chair.classList.add('filled');
+        chair.textContent = getChairLabel(guests[i] || '');
+        prezEl.appendChild(chair);
+      }
+    }
+
+    // ────────────────────────────────────────────────
+    // SIDEBAR
+    // ────────────────────────────────────────────────
+    let currentTable = null;
+
+    function selectTable(id) {
+      document.querySelectorAll('.masa-wrap').forEach(el => el.classList.remove('selected'));
+      document.getElementById('mesa-prez').classList.remove('selected');
+
+      if (id === 'prez') {
+        document.getElementById('mesa-prez').classList.add('selected');
+      } else {
+        const el = document.getElementById(`mesa-${id}`);
+        if (el) el.classList.add('selected');
+      }
+      currentTable = id;
+
+      const mesa = id === 'prez' ? PREZ : MESE.find(m => m.id === id);
+      if (!mesa) return;
+      const guests = getGuests(id) || [...mesa.guests];
+
+      document.getElementById('info-title').textContent = mesa.name;
+      document.getElementById('info-sub').textContent =
+        `${mesa.seats} locuri${mesa.headSeat ? ' · 1 capăt de masă' : ''}`;
+
+      const list = document.getElementById('seats-list');
+      list.innerHTML = '';
+
+      const regularSeats = mesa.headSeat ? mesa.seats - 1 : mesa.seats;
+
+      for (let i = 0; i < mesa.seats; i++) {
+        const isHead = mesa.headSeat && i === mesa.seats - 1;
+        const item = document.createElement('div');
+        item.className = 'seat-item' + (isHead ? ' head-seat' : '');
+        item.dataset.idx = i;
+        item.draggable = !isLocked;
+
+        const handle = document.createElement('span');
+        handle.className = 'drag-handle';
+        handle.textContent = '⋮⋮';
+        handle.title = 'Trage pentru a muta';
+
+        const num = document.createElement('div');
+        num.className = 'seat-num' + (isHead ? ' head' : '');
+        num.textContent = isHead ? '↔' : (i + 1);
+
+        const inp = document.createElement('input');
+        inp.type = 'text';
+        inp.placeholder = isHead ? 'Capăt masă…' : `Loc ${i + 1}…`;
+        inp.value = guests[i] || '';
+        inp.dataset.idx = i;
+        inp.readOnly = isLocked;
+        inp.addEventListener('input', onSeatInput);
+        // Prevent drag from starting when interacting with the input
+        inp.addEventListener('mousedown', (e) => e.stopPropagation());
+        inp.draggable = false;
+
+        const lbl = document.createElement('span');
+        lbl.className = 'seat-label';
+        lbl.textContent = isHead ? 'capăt' : (i < Math.ceil(regularSeats / 2) ? 'sus' : 'jos');
+
+        // Drag & drop events
+        item.addEventListener('dragstart', onDragStart);
+        item.addEventListener('dragend', onDragEnd);
+        item.addEventListener('dragover', onDragOver);
+        item.addEventListener('dragleave', onDragLeave);
+        item.addEventListener('drop', onDrop);
+
+        item.appendChild(handle);
+        item.appendChild(num);
+        item.appendChild(inp);
+        item.appendChild(lbl);
+        list.appendChild(item);
+      }
+    }
+
+    // ────────────────────────────────────────────────
+    // DRAG & DROP
+    // ────────────────────────────────────────────────
+    let dragIdx = null;
+
+    function onDragStart(e) {
+      if (isLocked) { e.preventDefault(); return; }
+      dragIdx = parseInt(e.currentTarget.dataset.idx);
+      e.currentTarget.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      // Firefox needs data set on dataTransfer to fire drop
+      e.dataTransfer.setData('text/plain', dragIdx);
+    }
+
+    function onDragEnd(e) {
+      e.currentTarget.classList.remove('dragging');
+      document.querySelectorAll('.seat-item').forEach(el => {
+        el.classList.remove('drop-above', 'drop-below');
+      });
+      dragIdx = null;
+    }
+
+    function onDragOver(e) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      const item = e.currentTarget;
+      if (parseInt(item.dataset.idx) === dragIdx) return;
+      const rect = item.getBoundingClientRect();
+      const above = e.clientY < rect.top + rect.height / 2;
+      // Clear other indicators first
+      document.querySelectorAll('.seat-item').forEach(el => {
+        if (el !== item) el.classList.remove('drop-above', 'drop-below');
+      });
+      item.classList.toggle('drop-above', above);
+      item.classList.toggle('drop-below', !above);
+    }
+
+    function onDragLeave(e) {
+      // Only clear if we're really leaving (not entering a child)
+      if (!e.currentTarget.contains(e.relatedTarget)) {
+        e.currentTarget.classList.remove('drop-above', 'drop-below');
+      }
+    }
+
+    function onDrop(e) {
+      e.preventDefault();
+      if (dragIdx === null || !currentTable) return;
+      const targetIdx = parseInt(e.currentTarget.dataset.idx);
+      if (targetIdx === dragIdx) return;
+
+      const rect = e.currentTarget.getBoundingClientRect();
+      const above = e.clientY < rect.top + rect.height / 2;
+      let dropIdx = targetIdx + (above ? 0 : 1);
+      if (dropIdx > dragIdx) dropIdx--;
+      if (dropIdx === dragIdx) return;
+
+      // Reorder the guests array
+      const mesa = currentTable === 'prez' ? PREZ : MESE.find(m => m.id === currentTable);
+      const guests = getGuests(currentTable) || [...mesa.guests];
+      const [moved] = guests.splice(dragIdx, 1);
+      guests.splice(dropIdx, 0, moved);
+      saved[currentTable] = guests;
+
+      // Auto-save
+      try { localStorage.setItem('nunta_plan_v2', JSON.stringify(saved)); } catch (err) { }
+
+      // Re-render everything
+      renderAll();
+      selectTable(currentTable);
+    }
+
+    function onSeatInput(e) {
+      if (!currentTable) return;
+      const mesa = currentTable === 'prez' ? PREZ : MESE.find(m => m.id === currentTable);
+      const guests = getGuests(currentTable) || [...mesa.guests];
+      guests[parseInt(e.target.dataset.idx)] = e.target.value;
+      saved[currentTable] = guests;
+      renderAll();
+      if (currentTable === 'prez') {
+        document.getElementById('mesa-prez').classList.add('selected');
+      } else {
+        const el = document.getElementById(`mesa-${currentTable}`);
+        if (el) el.classList.add('selected');
+      }
+    }
+
+    function updateProgress() {
+      let filled = 0; let total = 0;
+      [...MESE, PREZ].forEach(m => {
+        const g = getGuests(m.id) || m.guests;
+        total += m.seats;
+        filled += g.filter(x => x && x.trim()).length;
+      });
+      document.getElementById('progress-fill').style.width = (filled / total * 100) + '%';
+      document.getElementById('progress-text').textContent = `${filled} / ${total} locuri completate`;
+    }
+
+    function saveAll() {
+      try {
+        localStorage.setItem('nunta_plan_v2', JSON.stringify(saved));
+        showToast('✓ Salvat cu succes!');
+      } catch (e) { showToast('Eroare la salvare'); }
+    }
+
+    function exportData() {
+      let text = 'PLAN SALĂ NUNTĂ – 24 Mai 2026\n';
+      text += '═'.repeat(40) + '\n\n';
+      [...MESE, PREZ].forEach(m => {
+        const g = getGuests(m.id) || m.guests;
+        text += `${m.name}\n${'─'.repeat(25)}\n`;
+        g.forEach((name, i) => {
+          const isHead = m.headSeat && i === m.seats - 1;
+          text += `  ${isHead ? '[Capăt]' : `Loc ${i + 1}`}: ${name || '—'}\n`;
+        });
+        text += '\n';
+      });
+      const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'plan_sala_nunta.txt';
+      a.click();
+      showToast('📋 Export descărcat!');
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    window.addEventListener('load', () => {
+      applyLockState();
+      renderAll();
+      selectTable(1);
+    });
+  </script>
+</body>
+
+</html>
