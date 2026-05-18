@@ -514,6 +514,77 @@
       color: var(--muted);
       margin-top: 4px;
     }
+
+    /* ──────────────────────────────────────────── */
+    /*  MOBILE — only viewing, no editing           */
+    /* ──────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+        height: auto;
+        min-height: 100vh;
+        overflow: visible;
+      }
+
+      #sidebar {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        order: 2;
+        border-right: none;
+        border-top: 1px solid var(--gold-light);
+        height: auto;
+        overflow: visible;
+      }
+
+      #canvas {
+        order: 1;
+        width: 100%;
+        height: auto;
+        overflow-x: auto;
+        overflow-y: visible;
+        padding: 12px 8px;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      #hall {
+        margin: 0;
+        box-shadow: none;
+      }
+
+      /* Force-hide all editing affordances */
+      .seat-item input {
+        pointer-events: none;
+        background: transparent;
+        font-size: 14px;
+        color: var(--text);
+      }
+
+      .seat-item {
+        padding: 12px 14px;
+        cursor: default;
+      }
+
+      #seats-list {
+        flex: none;
+        max-height: none;
+        overflow: visible;
+        padding: 10px 14px 24px;
+      }
+
+      #sidebar-header h1 {
+        font-size: 19px;
+      }
+
+      #sidebar-header p {
+        font-size: 11px;
+      }
+
+      /* Hide legend - takes up space, info is in chair colors anyway */
+      #legend {
+        display: none;
+      }
+    }
   </style>
 </head>
 
@@ -588,6 +659,19 @@
   </div>
 
   <script>
+
+    let _resizeTimer;
+    let _wasMobile = isMobileView();
+    window.addEventListener('resize', () => {
+      clearTimeout(_resizeTimer);
+      _resizeTimer = setTimeout(() => {
+        const nowMobile = isMobileView();
+        if (nowMobile !== _wasMobile) {
+          _wasMobile = nowMobile;
+        }
+      }, 200);
+    });
+
     // ────────────────────────────────────────────────
     // DATA
     // ────────────────────────────────────────────────
@@ -647,7 +731,15 @@
       return table ? [...table.guests] : null;
     }
 
+    function isMobileView() {
+      return window.innerWidth <= 768;
+    }
+
     function getChairLabel(name) {
+      if (isMobileView()) {
+        return String((idx ?? 0) + 1);
+      }
+
       if (!name || !name.trim()) return '';
       const parts = name.trim().split(/\s+/);
       // Romanian convention: "LastName FirstName" → display as "FirstName L."
@@ -757,7 +849,7 @@
         head.style.cssText = `left:${headX}px; top:${TABLE_H / 2 - 15}px;`;
         const headIdx = table.seats - 1;
         if (guests[headIdx] && guests[headIdx].trim()) head.classList.add('filled');
-        head.textContent = getChairLabel(guests[headIdx] || '');
+        head.textContent = getChairLabel(guests[headIdx] || '', headIdx);
         wrap.appendChild(head);
       }
 
@@ -776,7 +868,7 @@
         const gy = row === 0 ? -CHAIR_H - 4 : TABLE_H + 4;
         chair.style.cssText = `left:${gx}px; top:${gy}px;`;
         if (guests[i] && guests[i].trim()) chair.classList.add('filled');
-        chair.textContent = getChairLabel(guests[i] || '');
+        chair.textContent = getChairLabel(guests[i] || '', i);
         wrap.appendChild(chair);
       }
 
@@ -799,7 +891,7 @@
         const gx = startX + i * (CHAIR_W + CHAIR_GAP);
         chair.style.cssText = `position:absolute; left:${gx}px; top:-28px;`;
         if (guests[i] && guests[i].trim()) chair.classList.add('filled');
-        chair.textContent = getChairLabel(guests[i] || '');
+        chair.textContent = getChairLabel(guests[i] || '', i);
         headTableEl.appendChild(chair);
       }
     }
