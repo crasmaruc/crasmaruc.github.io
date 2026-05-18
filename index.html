@@ -116,62 +116,11 @@
       margin-bottom: 6px;
       background: var(--cream);
       border: 1px solid var(--cream-dark);
-      transition: border-color .2s, opacity .2s, transform .15s;
-      position: relative;
-    }
-
-    .seat-item:has(input:focus) {
-      border-color: var(--gold);
     }
 
     .seat-item.head-seat {
       background: #fff9ee;
       border-color: var(--gold-light);
-    }
-
-    .seat-item.dragging {
-      opacity: 0.4;
-      transform: scale(0.98);
-    }
-
-    .seat-item.drop-above::before,
-    .seat-item.drop-below::after {
-      content: '';
-      position: absolute;
-      left: 6px;
-      right: 6px;
-      height: 3px;
-      background: var(--gold-dark);
-      border-radius: 2px;
-      pointer-events: none;
-    }
-
-    .seat-item.drop-above::before {
-      top: -2px;
-    }
-
-    .seat-item.drop-below::after {
-      bottom: -2px;
-    }
-
-    .drag-handle {
-      cursor: grab;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1;
-      padding: 0 2px;
-      user-select: none;
-      flex-shrink: 0;
-      letter-spacing: -2px;
-      transition: color .15s;
-    }
-
-    .drag-handle:hover {
-      color: var(--gold-dark);
-    }
-
-    .drag-handle:active {
-      cursor: grabbing;
     }
 
     .seat-num {
@@ -192,18 +141,15 @@
       background: var(--brown);
     }
 
-    .seat-item input {
+    .seat-name {
       flex: 1;
-      border: none;
-      background: transparent;
       font-family: 'Jost', sans-serif;
       font-size: 13px;
       color: var(--text);
-      outline: none;
       padding: 2px 0;
     }
 
-    .seat-item input::placeholder {
+    .seat-name.empty {
       color: var(--muted);
       font-style: italic;
     }
@@ -213,46 +159,6 @@
       color: var(--muted);
       text-transform: uppercase;
       letter-spacing: .05em;
-    }
-
-    #sidebar-footer {
-      padding: 12px 16px;
-      border-top: 1px solid var(--cream-dark);
-      display: flex;
-      gap: 8px;
-    }
-
-    .btn {
-      flex: 1;
-      padding: 9px 0;
-      border-radius: 8px;
-      border: 1px solid var(--gold);
-      font-family: 'Jost', sans-serif;
-      font-size: 12px;
-      font-weight: 500;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: all .2s;
-    }
-
-    .btn-primary {
-      background: var(--gold);
-      color: var(--white);
-    }
-
-    .btn-primary:hover {
-      background: var(--gold-dark);
-      border-color: var(--gold-dark);
-    }
-
-    .btn-secondary {
-      background: transparent;
-      color: var(--gold-dark);
-    }
-
-    .btn-secondary:hover {
-      background: var(--cream);
     }
 
     /* ── CANVAS ── */
@@ -277,7 +183,7 @@
     .zone {
       position: absolute;
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
       align-items: center;
       justify-content: center;
       border-radius: 10px;
@@ -285,15 +191,33 @@
       letter-spacing: .07em;
       text-transform: uppercase;
       font-weight: 500;
-      gap: 4px;
+      gap: 6px;
+      line-height: 1;
     }
 
     .zone-icon {
       font-size: 22px;
     }
 
+    #zone-intrare-top {
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 220px;
+      height: 28px;
+      background: var(--cream-dark);
+      color: var(--brown);
+      border: 1px dashed var(--gold);
+      font-size: 11px;
+      flex-direction: row;
+    }
+
+    #zone-intrare-top .zone-icon {
+      font-size: 14px;
+    }
+
     #zone-dj {
-      top: 24px;
+      top: 50px;
       left: 50%;
       transform: translateX(-50%);
       width: 320px;
@@ -304,37 +228,90 @@
       font-size: 13px;
     }
 
+    /* Vertical zones: each letter is a separate span in a column */
+    .zone.vertical {
+      flex-direction: column;
+      gap: 2px;
+      letter-spacing: 0;
+    }
+
+    .zone.vertical .word-gap {
+      height: 6px;
+    }
+
     #zone-photo {
-      top: 24px;
-      left: 24px;
-      width: 170px;
-      height: 80px;
+      top: 150px;
+      left: 14px;
+      width: 60px;
+      height: 200px;
       background: var(--cream-dark);
       color: var(--brown);
       border: 1px dashed var(--gold);
     }
 
-    #zone-candy {
-      top: 24px;
-      right: 24px;
-      width: 170px;
-      height: 80px;
+    /* Right side, vertical strip along M7-M8 */
+    #zone-candy-right {
+      top: 380px;
+      right: 14px;
+      width: 60px;
+      height: 200px;
       background: var(--cream-dark);
       color: var(--brown);
       border: 1px dashed var(--gold);
     }
 
-    /* ── PREZIDIU (Masa Mirilor) ── */
-    #prezidiu {
+    /* Right side, between M8-M9 (entrance) */
+    #zone-intrare-right {
+      top: 680px;
+      right: 14px;
+      width: 60px;
+      height: 100px;
+      background: var(--cream-dark);
+      color: var(--brown);
+      border: 1px dashed var(--gold);
+    }
+
+    /* Left side, where Masa 5 used to be */
+    #zone-barmobil {
+      top: 1080px;
+      left: 14px;
+      width: 60px;
+      height: 150px;
+      background: var(--cream-dark);
+      color: var(--brown);
+      border: 1px dashed var(--gold);
+    }
+
+    /* Bottom edge, full width, behind head table */
+    #zone-bucatarie {
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 40px;
+      background: var(--brown);
+      color: var(--gold-light);
+      border-top: 1.5px solid var(--gold-dark);
+      border-radius: 0 0 10px 10px;
+      flex-direction: row;
+      gap: 8px;
+      font-size: 13px;
+    }
+
+    #zone-bucatarie .zone-icon {
+      font-size: 18px;
+    }
+
+    /* ── HEAD TABLE (Bride & Groom) ── */
+    #head-table {
       position: absolute;
-      bottom: 30px;
+      bottom: 65px;
       left: 50%;
       transform: translateX(-50%);
       width: 620px;
       cursor: pointer;
     }
 
-    .prezidiu-label {
+    .head-table-label {
       text-align: center;
       font-family: 'Cormorant Garamond', serif;
       font-size: 15px;
@@ -344,15 +321,15 @@
       letter-spacing: .08em;
     }
 
-    .prezidiu-label::before,
-    .prezidiu-label::after {
+    .head-table-label::before,
+    .head-table-label::after {
       content: '✦';
       color: var(--gold);
       margin: 0 10px;
       font-size: 12px;
     }
 
-    .prezidiu-table {
+    .head-table-section {
       background: linear-gradient(180deg, #fff9ee 0%, var(--cream) 100%);
       border: 2px solid var(--gold);
       border-radius: 12px;
@@ -364,13 +341,13 @@
       transition: border-color .2s;
     }
 
-    .prezidiu-table:hover,
-    .prezidiu-table.selected {
+    .head-table-section:hover,
+    .head-table-section.selected {
       border-color: var(--gold-dark);
       box-shadow: 0 0 0 3px var(--gold-light);
     }
 
-    .prezidiu-table .mesa-name {
+    .head-table-section .table-name {
       font-family: 'Cormorant Garamond', serif;
       font-size: 18px;
       font-weight: 600;
@@ -379,7 +356,7 @@
       text-align: center;
     }
 
-    .prezidiu-table .mesa-sub {
+    .head-table-section .table-sub {
       font-family: 'Jost', sans-serif;
       font-size: 11px;
       color: var(--muted);
@@ -389,12 +366,12 @@
     }
 
     /* ── TABLES ── */
-    .masa-wrap {
+    .table-wrap {
       position: absolute;
       cursor: pointer;
     }
 
-    .masa-rect {
+    .table-rect {
       background: var(--cream);
       border: 1.5px solid var(--gold);
       border-radius: 8px;
@@ -406,17 +383,17 @@
       z-index: 2;
     }
 
-    .masa-rect:hover,
-    .masa-wrap.selected .masa-rect {
+    .table-rect:hover,
+    .table-wrap.selected .table-rect {
       background: #fff9ee;
       border-color: var(--gold-dark);
     }
 
-    .masa-wrap.selected .masa-rect {
+    .table-wrap.selected .table-rect {
       box-shadow: 0 0 0 3px var(--gold-light);
     }
 
-    .masa-name {
+    .table-name {
       font-family: 'Cormorant Garamond', serif;
       font-size: 14px;
       font-weight: 600;
@@ -427,7 +404,7 @@
       user-select: none;
     }
 
-    .masa-count {
+    .table-count {
       font-size: 10px;
       color: var(--muted);
       font-family: 'Jost', sans-serif;
@@ -537,164 +514,6 @@
       color: var(--muted);
       margin-top: 4px;
     }
-
-    #toast {
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--brown);
-      color: var(--gold-light);
-      padding: 10px 20px;
-      border-radius: 8px;
-      font-size: 13px;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity .3s;
-      z-index: 999;
-    }
-
-    #toast.show {
-      opacity: 1;
-    }
-
-    /* ── LOCK MODE ── */
-    body.locked .drag-handle {
-      display: none;
-    }
-
-    body.locked .seat-item {
-      cursor: default;
-    }
-
-    body.locked .seat-item input {
-      cursor: default;
-      background: transparent;
-    }
-
-    body.locked #btn-save {
-      display: none;
-    }
-
-    body.locked .seat-num {
-      background: var(--muted);
-    }
-
-    body.locked .seat-num.head {
-      background: var(--brown-light);
-    }
-
-    #lock-banner {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 8px 12px;
-      background: var(--cream-dark);
-      color: var(--brown);
-      font-size: 11px;
-      letter-spacing: .04em;
-      border-bottom: 1px solid var(--gold-light);
-    }
-
-    body:not(.locked) #lock-banner {
-      background: #e8f5e0;
-      color: #3b6d11;
-      border-bottom-color: #97c459;
-    }
-
-    #lock-icon {
-      font-size: 14px;
-    }
-
-    /* ──────────────────────────────────────────── */
-    /*  MOBILE — only viewing, no editing           */
-    /* ──────────────────────────────────────────── */
-    @media (max-width: 768px) {
-      body {
-        flex-direction: column;
-        height: auto;
-        min-height: 100vh;
-        overflow: visible;
-      }
-
-      #sidebar {
-        width: 100%;
-        min-width: 0;
-        max-width: 100%;
-        order: 2;
-        border-right: none;
-        border-top: 1px solid var(--gold-light);
-        height: auto;
-        overflow: visible;
-      }
-
-      #canvas {
-        order: 1;
-        width: 100%;
-        height: auto;
-        overflow-x: auto;
-        overflow-y: visible;
-        padding: 12px 8px;
-        -webkit-overflow-scrolling: touch;
-      }
-
-      #hall {
-        margin: 0;
-        box-shadow: none;
-      }
-
-      /* Force-hide all editing affordances */
-      .drag-handle {
-        display: none !important;
-      }
-
-      #btn-save {
-        display: none !important;
-      }
-
-      #lock-banner {
-        pointer-events: none;
-        cursor: default;
-      }
-
-      .seat-item input {
-        pointer-events: none;
-        background: transparent;
-        font-size: 14px;
-        color: var(--text);
-      }
-
-      .seat-item {
-        padding: 12px 14px;
-        cursor: default;
-      }
-
-      #seats-list {
-        flex: none;
-        max-height: none;
-        overflow: visible;
-        padding: 10px 14px 24px;
-      }
-
-      #sidebar-header h1 {
-        font-size: 19px;
-      }
-
-      #sidebar-header p {
-        font-size: 11px;
-      }
-
-      /* Hide legend - takes up space, info is in chair colors anyway */
-      #legend {
-        display: none;
-      }
-
-      /* Footer simpler on mobile */
-      #sidebar-footer {
-        padding: 10px 14px 16px;
-      }
-    }
   </style>
 </head>
 
@@ -702,40 +521,44 @@
 
   <!-- SIDEBAR -->
   <div id="sidebar">
-    <div id="lock-banner" onclick="toggleLock()">
-      <span id="lock-icon">🔒</span>
-      <span id="lock-text">Doar vizualizare &nbsp;·&nbsp; Apasă pentru editare</span>
-    </div>
     <div id="sidebar-header">
       <h1>Plan Sală Nuntă</h1>
       <p>24 Mai 2026 &nbsp;·&nbsp; 86 invitați</p>
       <div id="progress-bar">
         <div id="progress-fill" style="width:0%"></div>
       </div>
-      <div id="progress-text">0 / 86 locuri completate</div>
+      <div id="progress-text">0 / 86 locuri</div>
     </div>
     <div id="table-info">
       <h2 id="info-title">Selectează o masă</h2>
-      <p id="info-sub">Apasă pe oricare masă din sală pentru a edita locurile</p>
+      <p id="info-sub">Apasă pe oricare masă din sală pentru a vedea invitații</p>
     </div>
     <div id="seats-list"></div>
-    <div id="sidebar-footer">
-      <button id="btn-save" class="btn btn-primary" onclick="saveAll()">💾 Salvează</button>
-      <button class="btn btn-secondary" onclick="exportData()">📋 Export</button>
-    </div>
   </div>
 
   <!-- HALL CANVAS -->
   <div id="canvas">
     <div id="hall">
+      <div class="zone" id="zone-intrare-top">
+        <span class="zone-icon"> </span>Intrare / Ieșire
+      </div>
       <div class="zone" id="zone-photo">
-        <span class="zone-icon">📷</span>Photo Corner
+        <span class="zone-icon"> </span>Photo Corner
       </div>
       <div class="zone" id="zone-dj">
-        <span class="zone-icon">🎵</span>DJ
+        <span class="zone-icon"> </span>DJ
       </div>
-      <div class="zone" id="zone-candy">
-        <span class="zone-icon">🍬</span>Candy Bar
+      <div class="zone" id="zone-candy-right">
+        <span class="zone-icon"> </span>Candy Bar
+      </div>
+      <div class="zone" id="zone-intrare-right">
+        <span class="zone-icon"> </span>Intrare / Ieșire
+      </div>
+      <div class="zone" id="zone-barmobil">
+        <span class="zone-icon"> </span>Bar
+      </div>
+      <div class="zone" id="zone-bucatarie">
+        <span class="zone-icon"> </span>Bucătărie
       </div>
 
       <div id="legend">
@@ -752,94 +575,23 @@
 
       <div id="tables-container"></div>
 
-      <div id="prezidiu" onclick="selectTable('prez')">
-        <div class="prezidiu-label">Masa de Prezidiu</div>
-        <div class="prezidiu-table" id="mesa-prez">
+      <div id="head-table" onclick="selectTable('head')">
+        <div class="head-table-label">Masa de Prezidiu</div>
+        <div class="head-table-section" id="head-table-rect">
           <div style="text-align:center;">
-            <div class="mesa-name">Masa 11 &nbsp;·&nbsp; Miri &amp; Nași</div>
-            <div class="mesa-sub">5 locuri</div>
+            <div class="table-name">Masa 11 &nbsp;·&nbsp; Miri &amp; Nași</div>
+            <div class="table-sub">5 locuri</div>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <div id="toast"></div>
-
   <script>
-    // ────────────────────────────────────────────────
-    // LOCK / PASSWORD PROTECTION
-    // ────────────────────────────────────────────────
-    let isLocked = true;
-    // Restore unlock state for this owner (per-browser)
-    try {
-      if (localStorage.getItem('nunta_unlocked') === 'true') isLocked = false;
-    } catch (e) { }
-
-    function toggleLock() {
-      if (isMobileView()) {
-        showToast('🔒 Editarea e disponibilă doar pe desktop');
-        return;
-      }
-      if (isLocked) {
-        const pw = prompt('🔒 Introdu parola pentru a edita planul:');
-        if (pw === null) return;
-        if (pw === 'nunta2026') {
-          isLocked = false;
-          try { localStorage.setItem('nunta_unlocked', 'true'); } catch (e) { }
-          applyLockState();
-          showToast('🔓 Editare activată');
-        } else {
-          showToast('❌ Parolă greșită!');
-        }
-      } else {
-        isLocked = true;
-        try { localStorage.removeItem('nunta_unlocked'); } catch (e) { }
-        applyLockState();
-        showToast('🔒 Mod doar-vizualizare');
-      }
-    }
-
-    function applyLockState() {
-      const mobile = isMobileView();
-      // On mobile, always behave as locked regardless of stored unlock state
-      document.body.classList.toggle('locked', isLocked || mobile);
-
-      const iconEl = document.getElementById('lock-icon');
-      const textEl = document.getElementById('lock-text');
-
-      if (mobile) {
-        iconEl.textContent = '🔒';
-        textEl.textContent = 'Doar vizualizare · Editare disponibilă pe desktop';
-      } else {
-        iconEl.textContent = isLocked ? '🔒' : '🔓';
-        textEl.textContent = isLocked
-          ? 'Doar vizualizare · Apasă pentru editare'
-          : 'Editare activă · Apasă pentru blocare';
-      }
-
-      renderAll();
-      if (currentTable) selectTable(currentTable);
-    }
-
-    // Re-apply on resize/orientation change so labels switch between names ↔ index
-    let _resizeTimer;
-    let _wasMobile = isMobileView();
-    window.addEventListener('resize', () => {
-      clearTimeout(_resizeTimer);
-      _resizeTimer = setTimeout(() => {
-        const nowMobile = isMobileView();
-        if (nowMobile !== _wasMobile) {
-          _wasMobile = nowMobile;
-          applyLockState();
-        }
-      }, 200);
-    });
-
     // ────────────────────────────────────────────────
     // DATA
     // ────────────────────────────────────────────────
-    const MESE = [
+    const TABLES = [
       {
         id: 1, name: 'Masa 1', seats: 8, headSeat: false,
         guests: ['Griggs Rose', 'Williams Aimee', 'Pleșcan Maria', 'Pleșcan Alberto', 'Sara', 'Avarvarei Ina', 'Acasandrei Iuliana', 'Moldovanu Ionuț']
@@ -853,12 +605,15 @@
         guests: ['Grecu Grigore', 'Grecu Dana', 'Antaluca-Grecu Nina', 'Antaluca-Grecu Gabriel', 'Grecu Ticu', 'Grecu Maria', 'Grecu Marina', 'Burcă Bogdan']
       },
       {
-        id: 4, name: 'Masa 4', seats: 9, headSeat: true,
-        guests: ['Grecu Nadia', 'Toanchină Ioana', 'Fiedler Mihaela', 'Wegener Tatiana', 'Petraș Mădălina', 'Grecu Adrian', 'Kurth Tobias', 'Wegener Irina', 'Grecu Ilie']
-      },
-      {
-        id: 5, name: 'Masa 5', seats: 8, headSeat: false,
-        guests: ['Timofte Valentin', 'Timofte Daria', 'Varvarici Claudia', 'Varvarici Cristi', 'Ivanov Petru', 'Ivanov Ana', 'Alexa Domnica', 'Alexa Ioachim']
+        id: 4, name: 'Masa 4 + 5', seats: 17, headSeat: true, customWidth: 380,
+        guests: [
+          'Ivanov Petru', 'Ivanov Ana', 'Alexa Ioachim', 'Alexa Domnica',
+          'Petraș Mădălina', 'Grecu Adrian', 'Kurth Tobias', 'Wegener Irina',
+          'Grecu Nadia', 'Timofte Daria', 'Timofte Valentin', 'Varvarici Claudia',
+          'Varvarici Cristi', 'Toanchină Ioana', 'Fiedler Mihaela', 'Wegener Tatiana',
+          // Head seat last
+          'Grecu Ilie'
+        ]
       },
       {
         id: 6, name: 'Masa 6', seats: 8, headSeat: false,
@@ -881,30 +636,23 @@
         guests: ['Negoiță Walter', 'Negoiță Cristina', 'Negoiță Jana', 'Negoiță Truță', 'Negoiță Alex', 'Negoiță Denisa', 'Stanciu Mariana', 'Stanciu Sorin']
       },
     ];
-    const PREZ = {
-      id: 'prez', name: 'Masa 11 · Miri & Nași', seats: 5, headSeat: false,
+    const HEAD_TABLE = {
+      id: 'head', name: 'Masa 11 · Miri & Nași', seats: 5, headSeat: false,
       guests: ['Negoiță Irinel', 'Crâșmăruc Gabriel', 'Chloe', 'Crâșmăruc Andreea', 'Negoiță Alina']
     };
 
-    let saved = {};
-    try { saved = JSON.parse(localStorage.getItem('nunta_plan_v2') || '{}'); } catch (e) { }
-
     function getGuests(id) {
-      return saved[id] ? [...saved[id]] : null;
+      if (id === 'head') return [...HEAD_TABLE.guests];
+      const table = TABLES.find(t => t.id === id);
+      return table ? [...table.guests] : null;
     }
 
-    function isMobileView() {
-      return window.innerWidth <= 768;
-    }
-
-    function getChairLabel(name, idx) {
-      // On mobile: show index number (1, 2, 3…) instead of name
-      if (isMobileView()) {
-        return String((idx ?? 0) + 1);
-      }
+    function getChairLabel(name) {
       if (!name || !name.trim()) return '';
       const parts = name.trim().split(/\s+/);
+      // Romanian convention: "LastName FirstName" → display as "FirstName L."
       if (parts.length === 1) return parts[0];
+      // First part = last name, second part = first name → swap and abbreviate last
       const lastName = parts[0];
       const firstName = parts.slice(1).join(' ');
       return `${firstName} ${lastName[0]}.`;
@@ -928,19 +676,22 @@
     const SPINE_OFFSET = 120;
 
     const tableRows = [
-      { left: 0, right: 5 },   // M1, M6
-      { left: 1, right: 6 },   // M2, M7
-      { left: 2, right: 7 },   // M3, M8
-      { left: 3, right: 8 },   // M4, M9
-      { left: 4, right: 9 },   // M5, M10
+      { left: 0, right: 4 },   // M1, M6
+      { left: 1, right: 5 },   // M2, M7
+      { left: 2, right: 6 },   // M3, M8
+      { left: 3, right: 7 },   // M4+5 merged, M9
+      { left: null, right: 8 },// BarMobil zone (left), M10 (right)
     ];
 
-    function getTablePos(side, rowIdx) {
+    function getTablePos(side, rowIdx, tableW) {
+      const w = tableW || TABLE_W;
       const y = Y_START + rowIdx * ROW_STEP;
       const angle = side === 'left' ? -ANGLE_DEG : ANGLE_DEG;
+      // Wider tables get shifted slightly toward center so they fit in the hall
+      const extraShift = Math.max(0, (w - TABLE_W) / 3);
       const cx = side === 'left'
-        ? CX - SPINE_OFFSET - TABLE_W / 2 + 10
-        : CX + SPINE_OFFSET + TABLE_W / 2 - 10;
+        ? CX - SPINE_OFFSET - w / 2 + 10 + extraShift
+        : CX + SPINE_OFFSET + w / 2 - 10 - extraShift;
       return { cx, cy: y, angle };
     }
 
@@ -957,65 +708,64 @@
       // Decorative wheat stem
       const spine = document.createElement('div');
       spine.className = 'stem';
-      spine.style.cssText = `left:${CX - 1}px; top:${Y_START - 80}px; width:2px; height:${totalHeight - Y_START + 130}px;`;
+      spine.style.cssText = `left:${CX - 1}px; top:140px; width:2px; height:${totalHeight - 90}px;`;
       container.appendChild(spine);
 
       tableRows.forEach((row, rowIdx) => {
         ['left', 'right'].forEach(side => {
-          const mesa = MESE[row[side]];
-          renderTable(mesa, side, rowIdx);
+          if (row[side] === null || row[side] === undefined) return;
+          const table = TABLES[row[side]];
+          renderTable(table, side, rowIdx);
         });
       });
 
-      renderPrezidiuChairs();
+      renderHeadTableChairs();
       updateProgress();
 
       const hall = document.getElementById('hall');
-      hall.style.minHeight = (totalHeight + 220) + 'px';
+      hall.style.minHeight = (totalHeight + 280) + 'px';
     }
 
-    function renderTable(mesa, side, rowIdx) {
-      const { cx, cy, angle } = getTablePos(side, rowIdx);
-      const guests = getGuests(mesa.id) || [...mesa.guests];
+    function renderTable(table, side, rowIdx) {
+      const tableW = table.customWidth || TABLE_W;
+      const { cx, cy, angle } = getTablePos(side, rowIdx, tableW);
+      const guests = getGuests(table.id) || [...table.guests];
 
       const wrap = document.createElement('div');
-      wrap.className = 'masa-wrap';
-      wrap.id = `mesa-${mesa.id}`;
+      wrap.className = 'table-wrap';
+      wrap.id = `table-${table.id}`;
       wrap.style.cssText = `
-    width:${TABLE_W}px; height:${TABLE_H}px;
-    left:${cx - TABLE_W / 2}px;
+    width:${tableW}px; height:${TABLE_H}px;
+    left:${cx - tableW / 2}px;
     top:${cy - TABLE_H / 2}px;
     transform-origin: center center;
     transform: rotate(${angle}deg);
   `;
-      wrap.onclick = (e) => { e.stopPropagation(); selectTable(mesa.id); };
+      wrap.onclick = (e) => { e.stopPropagation(); selectTable(table.id); };
 
       const rect = document.createElement('div');
-      rect.className = 'masa-rect';
+      rect.className = 'table-rect';
       rect.style.cssText = `width:100%;height:100%;`;
-      rect.innerHTML = `<div class="masa-name">${mesa.name}<span class="masa-count">${mesa.seats} pers.</span></div>`;
+      rect.innerHTML = `<div class="table-name">${table.name}<span class="table-count">${table.seats} pers.</span></div>`;
       wrap.appendChild(rect);
 
-      // Head chair (Masa 4) at INTERIOR end of table (toward spine)
-      if (mesa.headSeat) {
+      // Head chair at INTERIOR end of table (toward spine)
+      if (table.headSeat) {
         const head = document.createElement('div');
         head.className = 'chair head-chair';
-        // For left tables: interior = right edge (closer to spine)
-        // For right tables: interior = left edge (closer to spine)
-        // const headX = side === 'left' ? TABLE_W - 6 : -34;
-        const headX = side === 'left' ? -34 : TABLE_W - 6;
+        const headX = side === 'left' ? -34 : tableW - 6;
         head.style.cssText = `left:${headX}px; top:${TABLE_H / 2 - 15}px;`;
-        const headIdx = mesa.seats - 1;
+        const headIdx = table.seats - 1;
         if (guests[headIdx] && guests[headIdx].trim()) head.classList.add('filled');
-        head.textContent = getChairLabel(guests[headIdx] || '', headIdx);
+        head.textContent = getChairLabel(guests[headIdx] || '');
         wrap.appendChild(head);
       }
 
       // Regular chairs along long edges
-      const regularSeats = mesa.headSeat ? mesa.seats - 1 : mesa.seats;
+      const regularSeats = table.headSeat ? table.seats - 1 : table.seats;
       const perSide = Math.ceil(regularSeats / 2);
       const totalW = perSide * (CHAIR_W + CHAIR_GAP) - CHAIR_GAP;
-      const startX = (TABLE_W - totalW) / 2;
+      const startX = (tableW - totalW) / 2;
 
       for (let i = 0; i < regularSeats; i++) {
         const chair = document.createElement('div');
@@ -1026,31 +776,31 @@
         const gy = row === 0 ? -CHAIR_H - 4 : TABLE_H + 4;
         chair.style.cssText = `left:${gx}px; top:${gy}px;`;
         if (guests[i] && guests[i].trim()) chair.classList.add('filled');
-        chair.textContent = getChairLabel(guests[i] || '', i);
+        chair.textContent = getChairLabel(guests[i] || '');
         wrap.appendChild(chair);
       }
 
       container.appendChild(wrap);
     }
 
-    function renderPrezidiuChairs() {
-      const prezEl = document.getElementById('mesa-prez');
-      if (!prezEl) return;
-      prezEl.querySelectorAll('.chair').forEach(c => c.remove());
+    function renderHeadTableChairs() {
+      const headTableEl = document.getElementById('head-table-rect');
+      if (!headTableEl) return;
+      headTableEl.querySelectorAll('.chair').forEach(c => c.remove());
 
-      const guests = getGuests('prez') || [...PREZ.guests];
+      const guests = getGuests('head') || [...HEAD_TABLE.guests];
       const pW = 620;
-      const totalW = PREZ.seats * (CHAIR_W + CHAIR_GAP) - CHAIR_GAP;
+      const totalW = HEAD_TABLE.seats * (CHAIR_W + CHAIR_GAP) - CHAIR_GAP;
       const startX = (pW - totalW) / 2;
 
-      for (let i = 0; i < PREZ.seats; i++) {
+      for (let i = 0; i < HEAD_TABLE.seats; i++) {
         const chair = document.createElement('div');
         chair.className = 'chair';
         const gx = startX + i * (CHAIR_W + CHAIR_GAP);
         chair.style.cssText = `position:absolute; left:${gx}px; top:-28px;`;
         if (guests[i] && guests[i].trim()) chair.classList.add('filled');
-        chair.textContent = getChairLabel(guests[i] || '', i);
-        prezEl.appendChild(chair);
+        chair.textContent = getChairLabel(guests[i] || '');
+        headTableEl.appendChild(chair);
       }
     }
 
@@ -1060,209 +810,70 @@
     let currentTable = null;
 
     function selectTable(id) {
-      document.querySelectorAll('.masa-wrap').forEach(el => el.classList.remove('selected'));
-      document.getElementById('mesa-prez').classList.remove('selected');
+      document.querySelectorAll('.table-wrap').forEach(el => el.classList.remove('selected'));
+      document.getElementById('head-table-rect').classList.remove('selected');
 
-      if (id === 'prez') {
-        document.getElementById('mesa-prez').classList.add('selected');
+      if (id === 'head') {
+        document.getElementById('head-table-rect').classList.add('selected');
       } else {
-        const el = document.getElementById(`mesa-${id}`);
+        const el = document.getElementById(`table-${id}`);
         if (el) el.classList.add('selected');
       }
       currentTable = id;
 
-      const mesa = id === 'prez' ? PREZ : MESE.find(m => m.id === id);
-      if (!mesa) return;
-      const guests = getGuests(id) || [...mesa.guests];
+      const table = id === 'head' ? HEAD_TABLE : TABLES.find(t => t.id === id);
+      if (!table) return;
+      const guests = getGuests(id) || [...table.guests];
 
-      document.getElementById('info-title').textContent = mesa.name;
+      document.getElementById('info-title').textContent = table.name;
       document.getElementById('info-sub').textContent =
-        `${mesa.seats} locuri${mesa.headSeat ? ' · 1 capăt de masă' : ''}`;
+        `${table.seats} locuri${table.headSeat ? ' · 1 capăt de masă' : ''}`;
 
       const list = document.getElementById('seats-list');
       list.innerHTML = '';
 
-      const regularSeats = mesa.headSeat ? mesa.seats - 1 : mesa.seats;
+      const regularSeats = table.headSeat ? table.seats - 1 : table.seats;
 
-      for (let i = 0; i < mesa.seats; i++) {
-        const isHead = mesa.headSeat && i === mesa.seats - 1;
+      for (let i = 0; i < table.seats; i++) {
+        const isHead = table.headSeat && i === table.seats - 1;
         const item = document.createElement('div');
         item.className = 'seat-item' + (isHead ? ' head-seat' : '');
-        item.dataset.idx = i;
-        item.draggable = !(isLocked || isMobileView());
-
-        const handle = document.createElement('span');
-        handle.className = 'drag-handle';
-        handle.textContent = '⋮⋮';
-        handle.title = 'Trage pentru a muta';
 
         const num = document.createElement('div');
         num.className = 'seat-num' + (isHead ? ' head' : '');
         num.textContent = isHead ? '↔' : (i + 1);
 
-        const inp = document.createElement('input');
-        inp.type = 'text';
-        inp.placeholder = isHead ? 'Capăt masă…' : `Loc ${i + 1}…`;
-        inp.value = guests[i] || '';
-        inp.dataset.idx = i;
-        inp.readOnly = isLocked || isMobileView();
-        inp.addEventListener('input', onSeatInput);
-        // Prevent drag from starting when interacting with the input
-        inp.addEventListener('mousedown', (e) => e.stopPropagation());
-        inp.draggable = false;
+        const name = document.createElement('div');
+        name.className = 'seat-name';
+        name.textContent = guests[i] || '—';
+        if (!guests[i] || !guests[i].trim()) name.classList.add('empty');
 
         const lbl = document.createElement('span');
         lbl.className = 'seat-label';
         lbl.textContent = isHead ? 'capăt' : (i < Math.ceil(regularSeats / 2) ? 'sus' : 'jos');
 
-        // Drag & drop events
-        item.addEventListener('dragstart', onDragStart);
-        item.addEventListener('dragend', onDragEnd);
-        item.addEventListener('dragover', onDragOver);
-        item.addEventListener('dragleave', onDragLeave);
-        item.addEventListener('drop', onDrop);
-
-        item.appendChild(handle);
         item.appendChild(num);
-        item.appendChild(inp);
+        item.appendChild(name);
         item.appendChild(lbl);
         list.appendChild(item);
       }
     }
 
     // ────────────────────────────────────────────────
-    // DRAG & DROP
+    // PROGRESS
     // ────────────────────────────────────────────────
-    let dragIdx = null;
-
-    function onDragStart(e) {
-      if (isLocked) { e.preventDefault(); return; }
-      dragIdx = parseInt(e.currentTarget.dataset.idx);
-      e.currentTarget.classList.add('dragging');
-      e.dataTransfer.effectAllowed = 'move';
-      // Firefox needs data set on dataTransfer to fire drop
-      e.dataTransfer.setData('text/plain', dragIdx);
-    }
-
-    function onDragEnd(e) {
-      e.currentTarget.classList.remove('dragging');
-      document.querySelectorAll('.seat-item').forEach(el => {
-        el.classList.remove('drop-above', 'drop-below');
-      });
-      dragIdx = null;
-    }
-
-    function onDragOver(e) {
-      e.preventDefault();
-      e.dataTransfer.dropEffect = 'move';
-      const item = e.currentTarget;
-      if (parseInt(item.dataset.idx) === dragIdx) return;
-      const rect = item.getBoundingClientRect();
-      const above = e.clientY < rect.top + rect.height / 2;
-      // Clear other indicators first
-      document.querySelectorAll('.seat-item').forEach(el => {
-        if (el !== item) el.classList.remove('drop-above', 'drop-below');
-      });
-      item.classList.toggle('drop-above', above);
-      item.classList.toggle('drop-below', !above);
-    }
-
-    function onDragLeave(e) {
-      // Only clear if we're really leaving (not entering a child)
-      if (!e.currentTarget.contains(e.relatedTarget)) {
-        e.currentTarget.classList.remove('drop-above', 'drop-below');
-      }
-    }
-
-    function onDrop(e) {
-      e.preventDefault();
-      if (dragIdx === null || !currentTable) return;
-      const targetIdx = parseInt(e.currentTarget.dataset.idx);
-      if (targetIdx === dragIdx) return;
-
-      const rect = e.currentTarget.getBoundingClientRect();
-      const above = e.clientY < rect.top + rect.height / 2;
-      let dropIdx = targetIdx + (above ? 0 : 1);
-      if (dropIdx > dragIdx) dropIdx--;
-      if (dropIdx === dragIdx) return;
-
-      // Reorder the guests array
-      const mesa = currentTable === 'prez' ? PREZ : MESE.find(m => m.id === currentTable);
-      const guests = getGuests(currentTable) || [...mesa.guests];
-      const [moved] = guests.splice(dragIdx, 1);
-      guests.splice(dropIdx, 0, moved);
-      saved[currentTable] = guests;
-
-      // Auto-save
-      try { localStorage.setItem('nunta_plan_v2', JSON.stringify(saved)); } catch (err) { }
-
-      // Re-render everything
-      renderAll();
-      selectTable(currentTable);
-    }
-
-    function onSeatInput(e) {
-      if (!currentTable) return;
-      const mesa = currentTable === 'prez' ? PREZ : MESE.find(m => m.id === currentTable);
-      const guests = getGuests(currentTable) || [...mesa.guests];
-      guests[parseInt(e.target.dataset.idx)] = e.target.value;
-      saved[currentTable] = guests;
-      renderAll();
-      if (currentTable === 'prez') {
-        document.getElementById('mesa-prez').classList.add('selected');
-      } else {
-        const el = document.getElementById(`mesa-${currentTable}`);
-        if (el) el.classList.add('selected');
-      }
-    }
-
     function updateProgress() {
       let filled = 0; let total = 0;
-      [...MESE, PREZ].forEach(m => {
-        const g = getGuests(m.id) || m.guests;
-        total += m.seats;
+      [...TABLES, HEAD_TABLE].forEach(t => {
+        const g = t.guests;
+        total += t.seats;
         filled += g.filter(x => x && x.trim()).length;
       });
       document.getElementById('progress-fill').style.width = (filled / total * 100) + '%';
-      document.getElementById('progress-text').textContent = `${filled} / ${total} locuri completate`;
-    }
-
-    function saveAll() {
-      try {
-        localStorage.setItem('nunta_plan_v2', JSON.stringify(saved));
-        showToast('✓ Salvat cu succes!');
-      } catch (e) { showToast('Eroare la salvare'); }
-    }
-
-    function exportData() {
-      let text = 'PLAN SALĂ NUNTĂ – 24 Mai 2026\n';
-      text += '═'.repeat(40) + '\n\n';
-      [...MESE, PREZ].forEach(m => {
-        const g = getGuests(m.id) || m.guests;
-        text += `${m.name}\n${'─'.repeat(25)}\n`;
-        g.forEach((name, i) => {
-          const isHead = m.headSeat && i === m.seats - 1;
-          text += `  ${isHead ? '[Capăt]' : `Loc ${i + 1}`}: ${name || '—'}\n`;
-        });
-        text += '\n';
-      });
-      const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'plan_sala_nunta.txt';
-      a.click();
-      showToast('📋 Export descărcat!');
-    }
-
-    function showToast(msg) {
-      const t = document.getElementById('toast');
-      t.textContent = msg;
-      t.classList.add('show');
-      setTimeout(() => t.classList.remove('show'), 2500);
+      document.getElementById('progress-text').textContent = `${filled} / ${total} locuri`;
     }
 
     window.addEventListener('load', () => {
-      applyLockState();
       renderAll();
       selectTable(1);
     });
