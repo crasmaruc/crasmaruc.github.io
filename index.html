@@ -735,7 +735,7 @@
       return window.innerWidth <= 768;
     }
 
-    function getChairLabel(name) {
+    function getChairLabel(name, idx = 0) {
       if (isMobileView()) {
         return String((idx ?? 0) + 1);
       }
