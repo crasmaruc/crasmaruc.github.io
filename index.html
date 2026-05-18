@@ -842,7 +842,7 @@
     const MESE = [
       {
         id: 1, name: 'Masa 1', seats: 8, headSeat: false,
-        guests: ['Moldovanu Ionuț', 'Acasandrei Iuliana', 'Griggs Rose', 'Williams Aimee', 'Pleșcan Alberto', 'Pleșcan Maria', 'Sara', 'Avarvarei Ina']
+        guests: ['Griggs Rose', 'Williams Aimee', 'Pleșcan Maria', 'Pleșcan Alberto', 'Sara', 'Avarvarei Ina', 'Acasandrei Iuliana', 'Moldovanu Ionuț']
       },
       {
         id: 2, name: 'Masa 2', seats: 8, headSeat: false,
@@ -850,11 +850,11 @@
       },
       {
         id: 3, name: 'Masa 3', seats: 8, headSeat: false,
-        guests: ['Burcă Bogdan', 'Grecu Marina', 'Antaluca-Grecu Gabriel', 'Antaluca-Grecu Nina', 'Grecu Ticu', 'Grecu Maria', 'Grecu Grigore', 'Grecu Dana']
+        guests: ['Grecu Grigore', 'Grecu Dana', 'Antaluca-Grecu Nina', 'Antaluca-Grecu Gabriel', 'Grecu Ticu', 'Grecu Maria', 'Grecu Marina', 'Burcă Bogdan']
       },
       {
         id: 4, name: 'Masa 4', seats: 9, headSeat: true,
-        guests: ['Wegener Tatiana', 'Fiedler Mihaela', 'Toanchină Ioana', 'Grecu Nadia', 'Wegener Irina', 'Kurth Tobias', 'Grecu Adrian', 'Petraș Mădălina', 'Grecu Ilie']
+        guests: ['Grecu Nadia', 'Toanchină Ioana', 'Fiedler Mihaela', 'Wegener Tatiana', 'Petraș Mădălina', 'Grecu Adrian', 'Kurth Tobias', 'Wegener Irina', 'Grecu Ilie']
       },
       {
         id: 5, name: 'Masa 5', seats: 8, headSeat: false,
@@ -1002,7 +1002,8 @@
         head.className = 'chair head-chair';
         // For left tables: interior = right edge (closer to spine)
         // For right tables: interior = left edge (closer to spine)
-        const headX = side === 'left' ? TABLE_W - 6 : -34;
+        // const headX = side === 'left' ? TABLE_W - 6 : -34;
+        const headX = side === 'left' ? -34 : TABLE_W - 6;
         head.style.cssText = `left:${headX}px; top:${TABLE_H / 2 - 15}px;`;
         const headIdx = mesa.seats - 1;
         if (guests[headIdx] && guests[headIdx].trim()) head.classList.add('filled');
